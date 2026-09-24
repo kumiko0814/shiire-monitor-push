@@ -51,6 +51,25 @@ input,select{width:100%;border:1.5px solid var(--line);border-radius:10px;paddin
 .filter{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
 .filter button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 10px;font-size:12px;font-family:inherit;color:var(--muted);cursor:pointer}
 .filter button.on{background:var(--pink);border-color:var(--pink);color:#fff}
+
+.howto{background:#fff;border:2px solid var(--blue);border-radius:16px;padding:16px 18px;margin-bottom:16px}
+.howto h2{border-left-color:var(--blue)}
+.howto .tg{width:100%;border:none;background:#EEF5FF;color:var(--navy);border-radius:10px;padding:10px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:6px}
+.steps{list-style:none;padding:0;margin:0}
+.steps li{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px dashed var(--line)}
+.steps li:last-child{border-bottom:none}
+.num{flex:none;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
+.steps b{display:block;font-size:14.5px;margin-bottom:2px}
+.steps p{margin:0;font-size:13.5px;color:#374151}
+.steps .tap{display:inline-block;background:var(--pink);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;margin:0 2px}
+.steps .tap.b{background:var(--blue)} .steps .tap.g{background:#1B7F3B} .steps .tap.n{background:#EEF1F6;color:var(--navy)}
+.qa{margin-top:12px}
+.qa details{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0;background:#FAFBFD}
+.qa summary{font-weight:700;font-size:13.5px;cursor:pointer}
+.qa p{margin:6px 0 2px;font-size:13px;color:#374151}
+.flow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0 4px;font-size:12.5px;font-weight:700}
+.flow span{background:#EEF1F6;border-radius:8px;padding:6px 10px;color:var(--navy)}
+.flow i{font-style:normal;color:var(--muted)}
 @media (max-width:480px){.row{flex-direction:column;gap:0}}
 </style>
 </head>
@@ -61,6 +80,45 @@ input,select{width:100%;border:1.5px solid var(--line);border-radius:10px;paddin
   <p>失注リストの方へ、担当クローザーから個別に送る1通目です。名前を入れてコピーするだけで送れます。</p>
 </header>
 
+
+<div class="howto" id="howto">
+  <h2>使い方（はじめに読んでください）</h2>
+  <p style="margin:0 0 6px;font-size:13.5px">このページは、失注した方に「仕入れコースモニター」のお声がけを送るための道具です。文面を作る、送った記録をつける、返信が来たことを知る、の3つがここでできます。スプレッドシートを直接さわる必要はありません。</p>
+  <button class="tg" id="howtoTg" type="button">使い方をとじる</button>
+  <div id="howtoBody">
+  <h3 style="font-size:14px;margin:14px 0 6px;color:var(--navy)">最初の1回だけ</h3>
+  <ul class="steps">
+    <li><span class="num">1</span><div><b>「1. 名前を入れる」で自分の名前を選ぶ</b><p>右側の「あなたの名前（クローザー）」です。一度選ぶとこのスマホに記憶されます。</p></div></li>
+    <li><span class="num">2</span><div><b>「5. 自分の失注リスト」に合言葉を入れて<span class="tap b">読み込む</span></b><p>合言葉（6桁の数字）はくみこさんから届きます。入れると、あなたが担当した失注の方だけが並びます。</p></div></li>
+  </ul>
+  <h3 style="font-size:14px;margin:14px 0 6px;color:var(--navy)">毎日の流れ（1人につき約1分）</h3>
+  <div class="flow"><span>文面をコピー</span><i>→</i><span>プロラインを開く</span><i>→</i><span>貼って送信</span><i>→</i><span>「送った」を押す</span></div>
+  <ul class="steps">
+    <li><span class="num">1</span><div><b>リストの中から送る人を決めて<span class="tap">文面をコピー</span>を押す</b><p>その人の名前と、「久しぶり／直近」の使い分けが自動で入った文面がコピーされます。画面が上に動いて、送る文面が緑の吹き出しで確認できます。</p></div></li>
+    <li><span class="num">2</span><div><b><span class="tap n">プロラインを開く</span>を押して、その方のトーク画面に貼り付けて送る</b><p>貼り付けは、入力欄を長押し→「ペースト」です。文面や絵文字は変えずに送ってください。</p></div></li>
+    <li><span class="num">3</span><div><b>このページに戻って<span class="tap b">送った</span>を押す</b><p>これだけで、スプレッドシートの「対応状況」が「送付済」になり、送った日時も記録されます。手で書く必要はありません。</p></div></li>
+    <li><span class="num">4</span><div><b>送る時間は朝9時、昼12時、夜21時のどれか</b><p>1人1通だけ。返信がなくても2通目は送りません。</p></div></li>
+  </ul>
+  <h3 style="font-size:14px;margin:14px 0 6px;color:var(--navy)">返信が来たら</h3>
+  <ul class="steps">
+    <li><span class="num">1</span><div><b>返信が来ると、その人の枠がピンクになり「返信あり」と返信の中身が表示されます</b><p>プロラインの通知を10分ごとに自動で読んでいます。上の絞り込みで「返信あり」を押すと、返信が来た人だけが並びます。</p></div></li>
+    <li><span class="num">2</span><div><b>「興味あります」の方には、案内の文面（別途配布）を送って<span class="tap g">案内した</span>を押す</b><p>自動で拾えなかった場合は、送付済の行にある「返信きた」を自分で押してください。</p></div></li>
+    <li><span class="num">3</span><div><b>決まったら<span class="tap g">成約</span>、お断りなら<span class="tap n">辞退</span>を押す</b><p>押した内容はすべてスプレッドシートに入るので、くみこさんへの報告は不要です。</p></div></li>
+  </ul>
+  <h3 style="font-size:14px;margin:14px 0 6px;color:var(--navy)">スプレッドシートの見方（見るだけでOK）</h3>
+  <ul class="steps">
+    <li><span class="num">1</span><div><b>タブは担当者ごと。自分の名前のタブを開く</b><p>「全体」は全員分、「元担当」は今いない担当者の分です。</p></div></li>
+    <li><span class="num">2</span><div><b>右の方の列が進捗です</b><p>対応状況（未着手→送付済→返信あり→案内済→成約／辞退）、対応メモ、送付日時、返信日時、返信内容。対応メモだけは自由に書き込んでください。ほかの列はこのページが自動で書きます。</p></div></li>
+  </ul>
+  <div class="qa">
+    <details><summary>合言葉を忘れた・違うと出る</summary><p>くみこさんに聞いてください。6桁の数字です。全角で入っていると通らないので、半角で入れ直してください。</p></details>
+    <details><summary>「文面をコピー」を押してもコピーされない</summary><p>緑の吹き出しの文面を長押しして「コピー」を選んでください。iPhoneのSafariでまれに起きます。左下の「不具合を報告」から知らせてもらえると直します。</p></details>
+    <details><summary>リストに送りたい人がいない</summary><p>別の担当者のタブに入っているか、ブロック・揉め・仕入れコース登録済みで最初から外している方です。対応メモに名前を書いておいてください。</p></details>
+    <details><summary>間違えて「送った」を押した</summary><p>そのままで大丈夫です。実際に送ったあとに、もう一度押す必要はありません。取り消したい場合はスプレッドシートの対応状況を「未着手」に戻してください。</p></details>
+    <details><summary>返信が来たのに「返信あり」にならない</summary><p>LINE名が通知と違う書き方の場合に起きます。「返信きた」を自分で押してください。</p></details>
+  </div>
+  </div>
+</div>
 <div class="card">
   <h2>1. 名前を入れる</h2>
   <div class="row">
@@ -222,6 +280,15 @@ function load(){
 document.getElementById('pinBtn').onclick=load;
 closerSel.addEventListener('change',function(){ if(pin.value && rows.length) load(); });
 if(closerSel.value && pin.value) load();
+})();
+</script>
+
+<script>
+(function(){
+var b=document.getElementById('howtoBody'), g=document.getElementById('howtoTg'); var open=true;
+try{ open=localStorage.getItem('howtoOpen')!=='0'; }catch(e){}
+function ap(){ b.style.display=open?'':'none'; g.textContent=open?'使い方をとじる':'使い方をひらく'; }
+g.onclick=function(){ open=!open; try{localStorage.setItem('howtoOpen',open?'1':'0');}catch(e){} ap(); }; ap();
 })();
 </script>
 <!-- バグ報告ツール -->
