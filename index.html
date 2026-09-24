@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>仕入れコースモニター お声がけ文（クローザー用）</title>
+<style>
+:root{--navy:#1F2E4D;--blue:#3A78C9;--pink:#F08BA6;--bg:#F5F7FB;--card:#fff;--line:#E1E6EF;--muted:#6B7280;--text:#1F2937;--lineGreen:#8DE28D;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;font-size:15px;line-height:1.8}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 90px}
+header{background:var(--navy);color:#fff;border-radius:16px;padding:18px 20px;margin-bottom:18px}
+header h1{font-size:18px;margin:0 0 6px}
+header p{margin:0;font-size:12.5px;opacity:.9}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(31,46,77,.05)}
+h2{font-size:15px;margin:0 0 12px;padding-left:10px;border-left:5px solid var(--pink)}
+label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin:10px 0 4px}
+input,select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:16px;font-family:inherit;background:#fff}
+.row{display:flex;gap:10px}.row>div{flex:1}
+.seg{display:flex;gap:8px;margin:6px 0 4px}
+.seg button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:10px;font-size:13.5px;font-weight:700;font-family:inherit;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.hint{font-size:12px;color:var(--muted);margin:4px 0 0}
+.line{background:#7494C0;border-radius:16px;padding:16px 14px;margin:10px 0 12px}
+.bub{background:var(--lineGreen);color:#111;border-radius:16px;border-top-right-radius:4px;padding:11px 14px;font-size:14.5px;white-space:pre-wrap;word-break:break-word;max-width:88%;margin-left:auto;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.time{font-size:10.5px;color:#fff;text-align:right;margin:4px 6px 0;opacity:.85}
+.copy{display:block;width:100%;border:none;border-radius:999px;background:var(--pink);color:#fff;font-size:15px;font-weight:700;padding:13px;font-family:inherit;cursor:pointer}
+.copy.done{background:var(--navy)}
+.rules li{margin-bottom:6px}
+.ng{background:#FFF2F5;border:1px solid #F6C4D0;border-radius:12px;padding:12px 14px;font-size:13.5px}
+.ok{background:#EEF5FF;border:1px solid #C9DCF5;border-radius:12px;padding:12px 14px;font-size:13.5px;margin-top:10px}
+.small{font-size:12px;color:var(--muted)}
+.next{border:1.5px dashed var(--blue);border-radius:12px;padding:12px 14px;font-size:13.5px;background:#fff}
+@media (max-width:480px){.row{flex-direction:column;gap:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>仕入れコースモニター お声がけ文</h1>
+  <p>失注リストの方へ、担当クローザーから個別に送る1通目です。名前を入れてコピーするだけで送れます。</p>
+</header>
+
+<div class="card">
+  <h2>1. 名前を入れる</h2>
+  <div class="row">
+    <div><label>お客様の名前（LINE名のまま）</label><input id="cust" placeholder="例）さくら" autocomplete="off"></div>
+    <div><label>あなたの名前（クローザー）</label>
+      <select id="closer">
+        <option value="">選んでください</option>
+        <option>本田</option><option>芝山</option><option>栗山</option><option>羽田</option><option>栗田</option><option>佐伯</option>
+      </select></div>
+  </div>
+  <label>相手との距離感</label>
+  <div class="seg">
+    <button id="segA" class="on" type="button">久しぶりの人（面談から1ヶ月以上）</button>
+    <button id="segB" type="button">直近の人（面談から1ヶ月以内）</button>
+  </div>
+  <p class="hint">失注リストの「面談実施日」を見て選んでください。8月以降に面談した方は「直近」です。</p>
+</div>
+
+<div class="card">
+  <h2>2. 送る文面（プレビュー）</h2>
+  <div class="line">
+    <div class="bub" id="prev"></div>
+    <div class="time">既読 12:00</div>
+  </div>
+  <button class="copy" id="copyBtn" type="button">この文面をコピーする</button>
+  <p class="hint">コピーしたら、プロラインの該当の方のトーク画面に貼り付けて送信してください。</p>
+</div>
+
+<div class="card">
+  <h2>3. 送るときのルール</h2>
+  <ul class="rules">
+    <li>1人1通だけ。返信がなくても追撃は送りません。</li>
+    <li>送る時間は朝9時、昼12時、夜21時のどれか。深夜と早朝は避けてください。</li>
+    <li>名前はLINE名のまま。フルネームやニックネームに変えないでください。</li>
+    <li>絵文字と文面は変えずに送ります。言い回しを足すと「営業感」が出て返信率が落ちます。</li>
+    <li>送ったら失注リストの「対応状況」を「送付済」にしてください。</li>
+  </ul>
+  <div class="ng">送ってはいけない相手：ブロックされている方、過去に揉めた方、すでに仕入れコースに登録している方。この3つはリストから外してありますが、トークを開いて気づいたら送らずに対応メモに書いてください。</div>
+  <div class="ok">「興味あります」と返ってきたら、その先の文面は別途配布します。返信が来た時点で「対応状況」を「返信あり」に変えて、Slackの面談調整スレに共有してください。</div>
+</div>
+
+<div class="card">
+  <h2>4. 例文（そのまま見本）</h2>
+  <p class="small">久しぶりの人向け</p>
+  <div class="line"><div class="bub">さくらさん、お久しぶりです✨
+
+9月限定のミニマムな仕入れコースのモニターが今5名限定で募集されているそうなんですけれども、ご興味ありますか？？
+この話を社内で聞いた時さくらさんのお顔が真っ先に思い浮かんだので
+個別に声かけさせていただきましたっ✨</div></div>
+  <p class="small">直近の人向け</p>
+  <div class="line"><div class="bub">さくらさん、本田です☺️
+
+9月限定のミニマムな仕入れコースのモニターが今5名限定で募集されているそうなんですけれども、ご興味ありますか？？
+この話を社内で聞いた時さくらさんのお顔が真っ先に思い浮かんだので
+個別に声かけさせていただきましたっ✨</div></div>
+  <div class="next">次の文面（「興味あります」への返し）は準備中です。届き次第このページに追加します。</div>
+</div>
+</div>
+
+<script>
+(function(){
+var cust=document.getElementById('cust'), closer=document.getElementById('closer'), prev=document.getElementById('prev');
+var segA=document.getElementById('segA'), segB=document.getElementById('segB'), mode='A';
+var BODY="9月限定のミニマムな仕入れコースのモニターが今5名限定で募集されているそうなんですけれども、ご興味ありますか？？\nこの話を社内で聞いた時〇〇さんのお顔が真っ先に思い浮かんだので\n個別に声かけさせていただきましたっ✨";
+function build(){
+  var n=cust.value.trim()||'〇〇', c=closer.value||'〇〇';
+  var head= mode==='A' ? n+'さん、お久しぶりです✨' : n+'さん、'+c+'です☺️';
+  return head+"\n\n"+BODY.split('〇〇さん').join(n+'さん');
+}
+function render(){ prev.textContent=build(); try{localStorage.setItem('closerName',closer.value);}catch(e){} }
+cust.addEventListener('input',render); closer.addEventListener('change',render);
+segA.onclick=function(){mode='A';segA.classList.add('on');segB.classList.remove('on');render();};
+segB.onclick=function(){mode='B';segB.classList.add('on');segA.classList.remove('on');render();};
+try{ var s=localStorage.getItem('closerName'); if(s) closer.value=s; }catch(e){}
+render();
+document.getElementById('copyBtn').onclick=function(){
+  var t=build(), b=this;
+  if(!cust.value.trim()){ cust.focus(); alert('お客様の名前を入れてください'); return; }
+  if(mode==='B' && !closer.value){ closer.focus(); alert('あなたの名前を選んでください'); return; }
+  function ok(){ b.textContent='コピーしました。プロラインに貼り付けてください'; b.classList.add('done'); setTimeout(function(){ b.textContent='この文面をコピーする'; b.classList.remove('done'); },2200); }
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok).catch(function(){ fallback(); }); } else fallback();
+  function fallback(){ var ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); ok();}catch(e){ alert('長押しでコピーしてください'); } document.body.removeChild(ta); }
+};
+})();
+</script>
+<!-- バグ報告ツール -->
+<style>
+#bugL{position:fixed; left:12px; bottom:16px; z-index:59; background:rgba(255,255,255,.92); border:1px solid var(--line); color:var(--muted); font-size:10.5px; font-weight:700; border-radius:999px; padding:5px 12px; cursor:pointer; letter-spacing:.04em;}
+#bugM{position:fixed; inset:0; background:rgba(31,46,77,.55); display:none; align-items:center; justify-content:center; z-index:70; padding:24px;}
+#bugM.on{display:flex;}
+#bugM .bx{background:#fff; border-radius:20px; padding:22px 20px; max-width:360px; width:100%;}
+#bugM h3{font-size:14.5px; color:#1F2937; margin:0 0 8px;}
+#bugM textarea{width:100%; border:1.5px solid #E1E6EF; border-radius:12px; padding:11px 13px; font-size:14px; line-height:1.8; font-family:inherit; min-height:100px; resize:vertical; box-sizing:border-box;}
+#bugM .bb{display:flex; gap:8px; margin-top:12px;}
+#bugM button{flex:1; border:none; border-radius:999px; padding:11px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;}
+#bugM .s{background:#3A78C9; color:#fff;} #bugM .c{background:#F2F4F8; color:#1F2937;}
+#bugM .done{display:none; font-size:12.5px; color:#3A78C9; font-weight:700; margin-top:8px; text-align:center;}
+</style>
+<div id="bugL">不具合を報告</div>
+<div id="bugM"><div class="bx">
+  <h3>不具合・気になったことを教えてください</h3>
+  <textarea id="bugT" placeholder="例）コピーするボタンを押しても反応しませんでした（iPhone/Safari）"></textarea>
+  <div class="bb"><button class="c" id="bugC">閉じる</button><button class="s" id="bugS">送信する</button></div>
+  <div class="done" id="bugD">届きました。ありがとうございます。すぐ確認します。</div>
+</div></div>
+<script>
+(function(){
+var U="https://inrvprlyobghviklulcv.supabase.co/rest/v1/ailab_notes";
+var K="sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp";
+var M=document.getElementById("bugM");
+document.getElementById("bugL").onclick=function(){ M.classList.add("on"); };
+document.getElementById("bugC").onclick=function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; };
+document.getElementById("bugS").onclick=function(){
+  var t=document.getElementById("bugT").value.trim();
+  if(!t){ document.getElementById("bugT").focus(); return; }
+  var btn=this; btn.disabled=true;
+  function done(){ document.getElementById("bugD").style.display="block"; document.getElementById("bugT").value=""; btn.disabled=false; setTimeout(function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; },1800); }
+  fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+    body:JSON.stringify({member_id:"bug_shiire-monitor-push",member_name:"仕入れモニター声がけ",mood:"バグ報告",worry:t,want:location.href.slice(0,180)+" ／ "+navigator.userAgent.slice(0,140)})})
+    .then(function(){ done(); }).catch(function(){ btn.disabled=false; alert("送信できませんでした。通信環境をご確認ください。"); });
+};
+})();
+</script>
+</body>
+</html>
