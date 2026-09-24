@@ -32,6 +32,25 @@ input,select{width:100%;border:1.5px solid var(--line);border-radius:10px;paddin
 .ok{background:#EEF5FF;border:1px solid #C9DCF5;border-radius:12px;padding:12px 14px;font-size:13.5px;margin-top:10px}
 .small{font-size:12px;color:var(--muted)}
 .next{border:1.5px dashed var(--blue);border-radius:12px;padding:12px 14px;font-size:13.5px;background:#fff}
+
+.pin{display:flex;gap:8px;align-items:center}.pin input{flex:1}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.tabs button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:700;font-family:inherit;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.lead{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;background:#fff}
+.lead.rep{border-color:var(--pink);background:#FFF7F9}
+.lead .nm{font-weight:700;font-size:15px}
+.lead .meta{font-size:12px;color:var(--muted);margin:2px 0 8px}
+.lead .st{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;background:#EEF1F6;color:var(--navy);margin-left:6px}
+.lead .st.sent{background:#E3EEFF;color:var(--blue)} .lead .st.rep{background:var(--pink);color:#fff} .lead .st.done{background:#DDF3E4;color:#1B7F3B}
+.lead .reply{font-size:13px;background:#fff;border:1px dashed var(--pink);border-radius:8px;padding:8px 10px;margin:6px 0}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+.btns a,.btns button{border:none;border-radius:999px;padding:8px 12px;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer;text-decoration:none;display:inline-block}
+.b1{background:var(--pink);color:#fff}.b2{background:var(--blue);color:#fff}.b3{background:#EEF1F6;color:var(--navy)}.b4{background:#DDF3E4;color:#1B7F3B}
+.sum{font-size:12.5px;color:var(--muted);margin:4px 0 8px}
+.filter{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.filter button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 10px;font-size:12px;font-family:inherit;color:var(--muted);cursor:pointer}
+.filter button.on{background:var(--pink);border-color:var(--pink);color:#fff}
 @media (max-width:480px){.row{flex-direction:column;gap:0}}
 </style>
 </head>
@@ -77,12 +96,21 @@ input,select{width:100%;border:1.5px solid var(--line);border-radius:10px;paddin
     <li>送る時間は朝9時、昼12時、夜21時のどれか。深夜と早朝は避けてください。</li>
     <li>名前はLINE名のまま。フルネームやニックネームに変えないでください。</li>
     <li>絵文字と文面は変えずに送ります。言い回しを足すと「営業感」が出て返信率が落ちます。</li>
-    <li>送ったら失注リストの「対応状況」を「送付済」にしてください。</li>
+    <li>下の「自分の失注リスト」から「文面をコピー」→送信→「送った」を押すと、スプレッドシートに自動で記録されます。</li>
   </ul>
   <div class="ng">送ってはいけない相手：ブロックされている方、過去に揉めた方、すでに仕入れコースに登録している方。この3つはリストから外してありますが、トークを開いて気づいたら送らずに対応メモに書いてください。</div>
-  <div class="ok">「興味あります」と返ってきたら、その先の文面は別途配布します。返信が来た時点で「対応状況」を「返信あり」に変えて、Slackの面談調整スレに共有してください。</div>
+  <div class="ok">「興味あります」と返ってきたら、その先の文面は別途配布します。返信はプロラインの通知から10分ごとに自動で拾い、下のリストに「返信あり」と返信内容が出ます。返信が来た人には「案内した」を押してください。</div>
 </div>
 
+
+<div class="card" id="listCard">
+  <h2>5. 自分の失注リスト（ここから送ると自動で記録されます）</h2>
+  <div class="pin"><input id="pin" placeholder="合言葉（6桁）" inputmode="numeric" autocomplete="off"><button class="b2" id="pinBtn" style="border:none;border-radius:999px;padding:10px 16px;font-weight:700;font-family:inherit;cursor:pointer;color:#fff;background:var(--blue)">読み込む</button></div>
+  <p class="hint">合言葉はくみこさんから。上で選んだクローザーのタブを読み込みます。</p>
+  <div class="sum" id="sum"></div>
+  <div class="filter" id="filter"></div>
+  <div id="list"></div>
+</div>
 <div class="card">
   <h2>4. 例文（そのまま見本）</h2>
   <p class="small">久しぶりの人向け</p>
@@ -129,6 +157,71 @@ document.getElementById('copyBtn').onclick=function(){
   if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok).catch(function(){ fallback(); }); } else fallback();
   function fallback(){ var ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); ok();}catch(e){ alert('長押しでコピーしてください'); } document.body.removeChild(ta); }
 };
+})();
+</script>
+
+<script>
+(function(){
+var API='https://script.google.com/macros/s/AKfycbxowz0GDQZYgsxRGrKlLv9CU5e_qsWMncSPkX5P5YO4PkmHCqhvnveJyOayE3qAzFSt/exec';
+var rows=[], filt='all', closerSel=document.getElementById('closer'), pin=document.getElementById('pin');
+try{ var sp=localStorage.getItem('llpin'); if(sp) pin.value=sp; }catch(e){}
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function stCls(s){ return s==='送付済'?'sent':(s==='返信あり'?'rep':((s==='案内済'||s==='成約')?'done':'')); }
+function isRecent(d){ if(!d) return false; var dt=new Date(d); return (Date.now()-dt.getTime())<31*86400000; }
+function render(){
+  var c={}; rows.forEach(function(r){ c[r.status]=(c[r.status]||0)+1; });
+  document.getElementById('sum').textContent= rows.length? ('全'+rows.length+'人： '+Object.keys(c).map(function(k){return k+' '+c[k];}).join('　')) : '';
+  var f=document.getElementById('filter'); f.innerHTML='';
+  ['all','未着手','送付済','返信あり','案内済','成約','辞退'].forEach(function(k){ var b=document.createElement('button'); b.textContent=k==='all'?'すべて':k; if(k===filt) b.className='on'; b.onclick=function(){filt=k;render();}; f.appendChild(b); });
+  var L=document.getElementById('list'); L.innerHTML='';
+  var vis=rows.filter(function(r){ return filt==='all'||r.status===filt; });
+  vis.sort(function(a,b){ var o={'返信あり':0,'未着手':1,'送付済':2,'案内済':3,'成約':4,'辞退':5}; return (o[a.status]||9)-(o[b.status]||9) || (b.date||'').localeCompare(a.date||''); });
+  if(!vis.length){ L.innerHTML='<p class="hint">該当なし</p>'; return; }
+  vis.forEach(function(r){
+    var d=document.createElement('div'); d.className='lead'+(r.status==='返信あり'?' rep':'');
+    var h='<div class="nm">'+esc(r.line||r.name)+'<span class="st '+stCls(r.status)+'">'+esc(r.status)+'</span></div>'
+      +'<div class="meta">'+esc(r.al)+'　面談 '+esc(r.date)+'　'+(isRecent(r.date)?'直近':'久しぶり')+(r.reason?'　理由: '+esc(r.reason):'')+(r.sent?'　送付 '+esc(r.sent):'')+'</div>';
+    if(r.reply) h+='<div class="reply">返信 '+esc(r.replied)+'：'+esc(r.reply)+'</div>';
+    if(r.memo) h+='<div class="meta">備考: '+esc(r.memo)+'</div>';
+    h+='<div class="btns">'
+      +'<button class="b1" data-a="copy">文面をコピー</button>'
+      +'<a class="b3" target="_blank" rel="noopener" href="'+esc(r.url)+'">プロラインを開く</a>'
+      +(r.status==='未着手'?'<button class="b2" data-a="送付済">送った</button>':'')
+      +(r.status==='送付済'?'<button class="b2" data-a="返信あり">返信きた</button>':'')
+      +((r.status==='返信あり'||r.status==='送付済')?'<button class="b4" data-a="案内済">案内した</button>':'')
+      +(r.status==='案内済'?'<button class="b4" data-a="成約">成約</button>':'')
+      +(r.status!=='辞退'&&r.status!=='成約'?'<button class="b3" data-a="辞退">辞退</button>':'')
+      +'</div>';
+    d.innerHTML=h;
+    d.querySelectorAll('button').forEach(function(b){ b.onclick=function(){ act(r,b.dataset.a,b); }; });
+    L.appendChild(d);
+  });
+}
+function act(r,a,btn){
+  if(a==='copy'){
+    document.getElementById('cust').value=r.line||r.name;
+    (isRecent(r.date)?document.getElementById('segB'):document.getElementById('segA')).click();
+    document.getElementById('copyBtn').click();
+    window.scrollTo({top:document.getElementById('prev').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});
+    return;
+  }
+  btn.disabled=true; btn.textContent='記録中…';
+  fetch(API+'?ll=status&closer='+encodeURIComponent(closerSel.value)+'&row='+r.row+'&status='+encodeURIComponent(a)+'&url='+encodeURIComponent(r.url)+'&pin='+encodeURIComponent(pin.value))
+   .then(function(x){return x.json();}).then(function(j){ if(j.error){ alert('記録できませんでした: '+j.error); btn.disabled=false; return; } r.status=a; if(a==='送付済'&&!r.sent){ var n=new Date(); r.sent=(n.getMonth()+1)+'/'+n.getDate()+' '+n.getHours()+':'+('0'+n.getMinutes()).slice(-2); } render(); })
+   .catch(function(){ alert('通信エラー'); btn.disabled=false; });
+}
+function load(){
+  if(!closerSel.value){ closerSel.focus(); alert('上で自分の名前を選んでください'); return; }
+  if(!pin.value){ pin.focus(); return; }
+  try{ localStorage.setItem('llpin',pin.value); }catch(e){}
+  document.getElementById('sum').textContent='読み込み中…';
+  fetch(API+'?ll=list&closer='+encodeURIComponent(closerSel.value)+'&pin='+encodeURIComponent(pin.value)).then(function(x){return x.json();})
+   .then(function(j){ if(j.error){ document.getElementById('sum').textContent=(j.error==='pin'?'合言葉が違います':'読み込めませんでした'); return; } rows=j.rows||[]; render(); })
+   .catch(function(){ document.getElementById('sum').textContent='通信エラー'; });
+}
+document.getElementById('pinBtn').onclick=load;
+closerSel.addEventListener('change',function(){ if(pin.value && rows.length) load(); });
+if(closerSel.value && pin.value) load();
 })();
 </script>
 <!-- バグ報告ツール -->
