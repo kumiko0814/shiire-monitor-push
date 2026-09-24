@@ -86,17 +86,21 @@ input,select{width:100%;border:1.5px solid var(--line);border-radius:10px;paddin
 <div class="card">
   <h2>4. 例文（そのまま見本）</h2>
   <p class="small">久しぶりの人向け</p>
-  <div class="line"><div class="bub">さくらさん、お久しぶりです✨
+  <div class="line"><div class="bub">さくらさん、お久しぶりです✨☺️本田です！個別にすみません💦
 
 9月限定のミニマムな仕入れコースのモニターが今5名限定で募集されているそうなんですけれども、ご興味ありますか？？
 この話を社内で聞いた時さくらさんのお顔が真っ先に思い浮かんだので
-個別に声かけさせていただきましたっ✨</div></div>
-  <p class="small">直近の人向け</p>
-  <div class="line"><div class="bub">さくらさん、本田です☺️
+個別に声かけさせていただきましたっ🤝
+
+ご興味ありそうですか！？</div></div>
+  <p class="small">直近の人向け（「お久しぶりです」だけ外した版）</p>
+  <div class="line"><div class="bub">さくらさん、本田です☺️個別にすみません💦
 
 9月限定のミニマムな仕入れコースのモニターが今5名限定で募集されているそうなんですけれども、ご興味ありますか？？
 この話を社内で聞いた時さくらさんのお顔が真っ先に思い浮かんだので
-個別に声かけさせていただきましたっ✨</div></div>
+個別に声かけさせていただきましたっ🤝
+
+ご興味ありそうですか！？</div></div>
   <div class="next">次の文面（「興味あります」への返し）は準備中です。届き次第このページに追加します。</div>
 </div>
 </div>
@@ -105,10 +109,10 @@ input,select{width:100%;border:1.5px solid var(--line);border-radius:10px;paddin
 (function(){
 var cust=document.getElementById('cust'), closer=document.getElementById('closer'), prev=document.getElementById('prev');
 var segA=document.getElementById('segA'), segB=document.getElementById('segB'), mode='A';
-var BODY="9月限定のミニマムな仕入れコースのモニターが今5名限定で募集されているそうなんですけれども、ご興味ありますか？？\nこの話を社内で聞いた時〇〇さんのお顔が真っ先に思い浮かんだので\n個別に声かけさせていただきましたっ✨";
+var BODY="9月限定のミニマムな仕入れコースのモニターが今5名限定で募集されているそうなんですけれども、ご興味ありますか？？\nこの話を社内で聞いた時〇〇さんのお顔が真っ先に思い浮かんだので\n個別に声かけさせていただきましたっ🤝\n\nご興味ありそうですか！？";
 function build(){
   var n=cust.value.trim()||'〇〇', c=closer.value||'〇〇';
-  var head= mode==='A' ? n+'さん、お久しぶりです✨' : n+'さん、'+c+'です☺️';
+  var head= mode==='A' ? n+'さん、お久しぶりです✨☺️'+c+'です！個別にすみません💦' : n+'さん、'+c+'です☺️個別にすみません💦';
   return head+"\n\n"+BODY.split('〇〇さん').join(n+'さん');
 }
 function render(){ prev.textContent=build(); try{localStorage.setItem('closerName',closer.value);}catch(e){} }
@@ -120,7 +124,7 @@ render();
 document.getElementById('copyBtn').onclick=function(){
   var t=build(), b=this;
   if(!cust.value.trim()){ cust.focus(); alert('お客様の名前を入れてください'); return; }
-  if(mode==='B' && !closer.value){ closer.focus(); alert('あなたの名前を選んでください'); return; }
+  if(!closer.value){ closer.focus(); alert('あなたの名前を選んでください'); return; }
   function ok(){ b.textContent='コピーしました。プロラインに貼り付けてください'; b.classList.add('done'); setTimeout(function(){ b.textContent='この文面をコピーする'; b.classList.remove('done'); },2200); }
   if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok).catch(function(){ fallback(); }); } else fallback();
   function fallback(){ var ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); ok();}catch(e){ alert('長押しでコピーしてください'); } document.body.removeChild(ta); }
