@@ -70,6 +70,9 @@ input,select{width:100%;border:1.5px solid var(--line);border-radius:10px;paddin
 .flow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0 4px;font-size:12.5px;font-weight:700}
 .flow span{background:#EEF1F6;border-radius:8px;padding:6px 10px;color:var(--navy)}
 .flow i{font-style:normal;color:var(--muted)}
+.pri{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;margin-left:6px;background:#FFF1D6;color:#8A5A00}
+.pri.a{background:#FFE0E6;color:#B0173A}.pri.b{background:#E6F4EA;color:#1B7F3B}.pri.g{background:#EEF1F6;color:var(--muted)}
+.why{font-size:12.5px;color:#374151;background:#F7F8FB;border-radius:8px;padding:6px 10px;margin:4px 0 8px}
 @media (max-width:480px){.row{flex-direction:column;gap:0}}
 </style>
 </head>
@@ -94,7 +97,7 @@ input,select{width:100%;border:1.5px solid var(--line);border-radius:10px;paddin
   <h3 style="font-size:14px;margin:14px 0 6px;color:var(--navy)">毎日の流れ（1人につき約1分）</h3>
   <div class="flow"><span>文面をコピー</span><i>→</i><span>プロラインを開く</span><i>→</i><span>貼って送信</span><i>→</i><span>「送った」を押す</span></div>
   <ul class="steps">
-    <li><span class="num">1</span><div><b>リストの中から送る人を決めて<span class="tap">文面をコピー</span>を押す</b><p>その人の名前と、「久しぶり／直近」の使い分けが自動で入った文面がコピーされます。画面が上に動いて、送る文面が緑の吹き出しで確認できます。</p></div></li>
+    <li><span class="num">1</span><div><b>「第一候補」から順に送る。送る人の<span class="tap">文面をコピー</span>を押す</b><p>「第一候補・お金が理由」は、面談でお金が理由になった方です。仕入れコースの価格なら決まりやすいので最初に送ります。「支払い困難」の方は半額9.8万円の用意ができるかを先に聞いてください。「過去に案内済み」の方は一度断られているので最後です。</p><p>その人の名前と、「久しぶり／直近」の使い分けが自動で入った文面がコピーされます。画面が上に動いて、送る文面が緑の吹き出しで確認できます。</p></div></li>
     <li><span class="num">2</span><div><b><span class="tap n">プロラインを開く</span>を押して、その方のトーク画面に貼り付けて送る</b><p>貼り付けは、入力欄を長押し→「ペースト」です。文面や絵文字は変えずに送ってください。</p></div></li>
     <li><span class="num">3</span><div><b>このページに戻って<span class="tap b">送った</span>を押す</b><p>これだけで、スプレッドシートの「対応状況」が「送付済」になり、送った日時も記録されます。手で書く必要はありません。</p></div></li>
     <li><span class="num">4</span><div><b>送る時間は朝9時、昼12時、夜21時のどれか</b><p>1人1通だけ。返信がなくても2通目は送りません。</p></div></li>
@@ -220,25 +223,37 @@ document.getElementById('copyBtn').onclick=function(){
 
 <script>
 (function(){
-var API='https://script.google.com/macros/s/AKfycbxowz0GDQZYgsxRGrKlLv9CU5e_qsWMncSPkX5P5YO4PkmHCqhvnveJyOayE3qAzFSt/exec';
+var API='https://script.google.com/macros/s/AKfycbzE0LiJvo8da9b7GgZEdrj_yzw4AmNdD701bpSCHr9s3TnK8xjMmh_YrqeHIeDGMCir/exec';
 var rows=[], filt='all', closerSel=document.getElementById('closer'), pin=document.getElementById('pin');
 try{ var sp=localStorage.getItem('llpin'); if(sp) pin.value=sp; }catch(e){}
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function prio(r){
+  var j=r.judge||'', c=r.cand||'';
+  if(c.indexOf('案内済')>-1) return {rank:4,label:'過去に案内済み',cls:'g'};
+  if(c.indexOf('△')>-1||j.indexOf('支払い困難')>-1) return {rank:3,label:'支払い困難（半額9.8万の相談から）',cls:'a'};
+  if(j.indexOf('可動額')>-1) return {rank:1,label:'第一候補・可動額あり',cls:'b'};
+  if(j.indexOf('資金面の言及')>-1) return {rank:0,label:'第一候補・お金が理由',cls:'b'};
+  if(j.indexOf('資金の話なし')>-1) return {rank:2,label:'',cls:''};
+  return {rank:2,label:'',cls:''};
+}
 function stCls(s){ return s==='送付済'?'sent':(s==='返信あり'?'rep':((s==='案内済'||s==='成約')?'done':'')); }
 function isRecent(d){ if(!d) return false; var dt=new Date(d); return (Date.now()-dt.getTime())<31*86400000; }
 function render(){
   var c={}; rows.forEach(function(r){ c[r.status]=(c[r.status]||0)+1; });
   document.getElementById('sum').textContent= rows.length? ('全'+rows.length+'人： '+Object.keys(c).map(function(k){return k+' '+c[k];}).join('　')) : '';
   var f=document.getElementById('filter'); f.innerHTML='';
-  ['all','未着手','送付済','返信あり','案内済','成約','辞退'].forEach(function(k){ var b=document.createElement('button'); b.textContent=k==='all'?'すべて':k; if(k===filt) b.className='on'; b.onclick=function(){filt=k;render();}; f.appendChild(b); });
+  ['all','第一候補','未着手','送付済','返信あり','案内済','成約','辞退'].forEach(function(k){ var b=document.createElement('button'); b.textContent=k==='all'?'すべて':k; if(k===filt) b.className='on'; b.onclick=function(){filt=k;render();}; f.appendChild(b); });
   var L=document.getElementById('list'); L.innerHTML='';
-  var vis=rows.filter(function(r){ return filt==='all'||r.status===filt; });
-  vis.sort(function(a,b){ var o={'返信あり':0,'未着手':1,'送付済':2,'案内済':3,'成約':4,'辞退':5}; return (o[a.status]||9)-(o[b.status]||9) || (b.date||'').localeCompare(a.date||''); });
+  var vis=rows.filter(function(r){ if(filt==='第一候補') return prio(r).rank<=1 && r.status==='未着手'; return filt==='all'||r.status===filt; });
+  vis.sort(function(a,b){ var o={'返信あり':0,'未着手':1,'送付済':2,'案内済':3,'成約':4,'辞退':5}; return (o[a.status]||9)-(o[b.status]||9) || prio(a).rank-prio(b).rank || (b.date||'').localeCompare(a.date||''); });
   if(!vis.length){ L.innerHTML='<p class="hint">該当なし</p>'; return; }
   vis.forEach(function(r){
     var d=document.createElement('div'); d.className='lead'+(r.status==='返信あり'?' rep':'');
-    var h='<div class="nm">'+esc(r.line||r.name)+'<span class="st '+stCls(r.status)+'">'+esc(r.status)+'</span></div>'
-      +'<div class="meta">'+esc(r.al)+'　面談 '+esc(r.date)+'　'+(isRecent(r.date)?'直近':'久しぶり')+(r.reason?'　理由: '+esc(r.reason):'')+(r.sent?'　送付 '+esc(r.sent):'')+'</div>';
+    var pr=prio(r);
+    var h='<div class="nm">'+esc(r.line||r.name)+'<span class="st '+stCls(r.status)+'">'+esc(r.status)+'</span>'+(pr.label?'<span class="pri '+pr.cls+'">'+esc(pr.label)+'</span>':'')+'</div>'
+      +'<div class="meta">'+esc(r.al)+'　面談 '+esc(r.date)+'　'+(isRecent(r.date)?'直近':'久しぶり')+(r.reason?'　理由: '+esc(r.reason):'')+(r.lastreply?'　最終返信 '+esc(r.lastreply):'')+(r.sent?'　送付 '+esc(r.sent):'')+'</div>';
+    var why=[]; if(r.judge) why.push(esc(r.judge)); if(r.basis) why.push('根拠: '+esc(r.basis)); if(r.amount) why.push('可動額: '+esc(r.amount)); if(r.money) why.push('発言: '+esc(r.money)); if(r.guide&&r.guide!=='なし') why.push('過去の案内: '+esc(r.guide)); if(r.hmemo) why.push(esc(r.hmemo));
+    if(why.length) h+='<div class="why">'+why.join('　／　')+'</div>';
     if(r.reply) h+='<div class="reply">返信 '+esc(r.replied)+'：'+esc(r.reply)+'</div>';
     if(r.memo) h+='<div class="meta">備考: '+esc(r.memo)+'</div>';
     h+='<div class="btns">'
